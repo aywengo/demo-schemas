@@ -1,0 +1,88 @@
+{
+  "type": "record",
+  "name": "UserProfile",
+  "namespace": "com.demo.ecommerce.user",
+  "doc": "User profile information for e-commerce platform - Initial version",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Unique user identifier (UUID)"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "doc": "User email address (primary identifier)"
+    },
+    {
+      "name": "name",
+      "type": {
+        "type": "record",
+        "name": "FullName",
+        "fields": [
+          {
+            "name": "first",
+            "type": "string",
+            "doc": "First name"
+          },
+          {
+            "name": "last",
+            "type": "string",
+            "doc": "Last name"
+          }
+        ]
+      },
+      "doc": "User's full name"
+    },
+    {
+      "name": "phone",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Phone number in E.164 format"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Account creation timestamp"
+    },
+    {
+      "name": "preferences",
+      "type": {
+        "type": "record",
+        "name": "UserPreferences",
+        "fields": [
+          {
+            "name": "newsletter",
+            "type": "boolean",
+            "default": false,
+            "doc": "Newsletter subscription preference"
+          },
+          {
+            "name": "language",
+            "type": {
+              "type": "enum",
+              "name": "Language",
+              "symbols": ["en", "es", "fr", "de", "it"]
+            },
+            "default": "en",
+            "doc": "Preferred language code"
+          },
+          {
+            "name": "currency",
+            "type": {
+              "type": "enum",
+              "name": "Currency",
+              "symbols": ["USD", "EUR", "GBP", "CAD"]
+            },
+            "default": "USD",
+            "doc": "Preferred currency code"
+          }
+        ]
+      },
+      "doc": "User preferences and settings"
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "type": "record",
+  "name": "TransactionEvent",
+  "namespace": "com.demo.fintech.transaction",
+  "doc": "Financial transaction events for digital banking platform",
+  "fields": [
+    {
+      "name": "transaction_id",
+      "type": "string",
+      "doc": "Unique transaction identifier (UUID)"
+    },
+    {
+      "name": "account_id",
+      "type": "string",
+      "doc": "Source account identifier"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Transaction timestamp (UTC)"
+    },
+    {
+      "name": "transaction_type",
+      "type": {
+        "type": "enum",
+        "name": "TransactionType",
+        "symbols": ["DEPOSIT", "WITHDRAWAL", "TRANSFER", "PAYMENT", "REFUND", "FEE", "INTEREST"]
+      },
+      "doc": "Type of financial transaction"
+    },
+    {
+      "name": "amount",
+      "type": {
+        "type": "record",
+        "name": "MonetaryAmount",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 18,
+              "scale": 8
+            },
+            "doc": "Transaction amount (supports crypto precision)"
+          },
+          {
+            "name": "currency",
+            "type": "string",
+            "doc": "Currency code (ISO 4217 or crypto symbol)"
+          }
+        ]
+      },
+      "doc": "Transaction amount with currency"
+    },
+    {
+      "name": "counterparty",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Counterparty",
+          "fields": [
+            {
+              "name": "account_id",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Counterparty account ID (if internal)"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "doc": "Counterparty name or identifier"
+            },
+            {
+              "name": "type",
+              "type": {
+                "type": "enum",
+                "name": "CounterpartyType",
+                "symbols": ["INDIVIDUAL", "BUSINESS", "BANK", "GOVERNMENT", "CRYPTO_EXCHANGE"]
+              },
+              "doc": "Type of counterparty"
+            },
+            {
+              "name": "external_id",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "External account number or crypto address"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "Transaction counterparty information"
+    },
+    {
+      "name": "description",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Transaction description or memo"
+    },
+    {
+      "name": "reference",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "External reference number"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "TransactionStatus",
+        "symbols": ["PENDING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "REVERSED"]
+      },
+      "default": "PENDING",
+      "doc": "Current transaction status"
+    },
+    {
+      "name": "compliance",
+      "type": {
+        "type": "record",
+        "name": "ComplianceInfo",
+        "fields": [
+          {
+            "name": "aml_status",
+            "type": {
+              "type": "enum",
+              "name": "AMLStatus",
+              "symbols": ["CLEAR", "REVIEW", "BLOCKED"]
+            },
+            "default": "CLEAR",
+            "doc": "Anti-money laundering check status"
+          },
+          {
+            "name": "risk_score",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Risk assessment score (0.0-1.0)"
+          },
+          {
+            "name": "regulatory_flags",
+            "type": {
+              "type": "array",
+              "items": "string"
+            },
+            "default": [],
+            "doc": "Regulatory compliance flags"
+          }
+        ]
+      },
+      "default": {
+        "aml_status": "CLEAR",
+        "risk_score": null,
+        "regulatory_flags": []
+      },
+      "doc": "Compliance and regulatory information"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional transaction metadata"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "type": "record",
+  "name": "OrderEvent",
+  "namespace": "com.demo.ecommerce.order",
+  "doc": "Order lifecycle events for e-commerce platform",
+  "fields": [
+    {
+      "name": "order_id",
+      "type": "string",
+      "doc": "Unique order identifier"
+    },
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "User who placed the order"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "OrderEventType",
+        "symbols": ["CREATED", "PAID", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"]
+      },
+      "doc": "Type of order event"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Event timestamp"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "OrderItem",
+          "fields": [
+            {
+              "name": "product_id",
+              "type": "string",
+              "doc": "Product SKU or identifier"
+            },
+            {
+              "name": "quantity",
+              "type": "int",
+              "doc": "Quantity ordered"
+            },
+            {
+              "name": "unit_price",
+              "type": {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 10,
+                "scale": 2
+              },
+              "doc": "Unit price at time of order"
+            },
+            {
+              "name": "currency",
+              "type": "string",
+              "default": "USD",
+              "doc": "Currency code"
+            }
+          ]
+        }
+      },
+      "doc": "Items in the order"
+    },
+    {
+      "name": "total_amount",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      },
+      "doc": "Total order amount"
+    },
+    {
+      "name": "shipping_address",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Address",
+          "fields": [
+            {
+              "name": "street",
+              "type": "string",
+              "doc": "Street address"
+            },
+            {
+              "name": "city",
+              "type": "string",
+              "doc": "City name"
+            },
+            {
+              "name": "state",
+              "type": "string",
+              "doc": "State or province"
+            },
+            {
+              "name": "country",
+              "type": "string",
+              "doc": "Country code (ISO 3166-1)"
+            },
+            {
+              "name": "postal_code",
+              "type": "string",
+              "doc": "Postal or ZIP code"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "Shipping address (null for digital products)"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional event metadata"
+    }
+  ]
+}

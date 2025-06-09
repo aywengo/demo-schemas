@@ -1,0 +1,162 @@
+{
+  "type": "record",
+  "name": "UserEvent",
+  "namespace": "com.demo.saas.events",
+  "doc": "User activity events for multi-tenant SaaS platform",
+  "fields": [
+    {
+      "name": "tenant_id",
+      "type": "string",
+      "doc": "Tenant (customer organization) identifier"
+    },
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "User identifier within the tenant"
+    },
+    {
+      "name": "session_id",
+      "type": "string",
+      "doc": "User session identifier"
+    },
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique event identifier (UUID)"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Event timestamp (UTC)"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "UserEventType",
+        "symbols": [
+          "LOGIN", "LOGOUT", "PAGE_VIEW", "CLICK", "FORM_SUBMIT", 
+          "FEATURE_USE", "API_CALL", "SEARCH", "EXPORT", "ERROR"
+        ]
+      },
+      "doc": "Type of user activity"
+    },
+    {
+      "name": "page_info",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "PageInfo",
+          "fields": [
+            {
+              "name": "url",
+              "type": "string",
+              "doc": "Page URL or route"
+            },
+            {
+              "name": "title",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Page title"
+            },
+            {
+              "name": "referrer",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Referring page URL"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "Page information for navigation events"
+    },
+    {
+      "name": "feature_info",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "FeatureInfo",
+          "fields": [
+            {
+              "name": "feature_name",
+              "type": "string",
+              "doc": "Feature or component name"
+            },
+            {
+              "name": "action",
+              "type": "string",
+              "doc": "Specific action performed"
+            },
+            {
+              "name": "parameters",
+              "type": {
+                "type": "map",
+                "values": "string"
+              },
+              "default": {},
+              "doc": "Feature-specific parameters"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "Feature usage information"
+    },
+    {
+      "name": "device_info",
+      "type": {
+        "type": "record",
+        "name": "DeviceInfo",
+        "fields": [
+          {
+            "name": "user_agent",
+            "type": "string",
+            "doc": "Browser user agent string"
+          },
+          {
+            "name": "ip_address",
+            "type": "string",
+            "doc": "Client IP address (anonymized)"
+          },
+          {
+            "name": "platform",
+            "type": {
+              "type": "enum",
+              "name": "Platform",
+              "symbols": ["WEB", "MOBILE_IOS", "MOBILE_ANDROID", "DESKTOP", "API"]
+            },
+            "doc": "Platform or client type"
+          },
+          {
+            "name": "screen_resolution",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Screen resolution (e.g., '1920x1080')"
+          },
+          {
+            "name": "timezone",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User timezone (IANA timezone)"
+          }
+        ]
+      },
+      "doc": "Device and browser information"
+    },
+    {
+      "name": "properties",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Custom event properties and tracking data"
+    }
+  ]
+}

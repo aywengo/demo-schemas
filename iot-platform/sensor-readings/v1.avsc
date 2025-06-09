@@ -1,0 +1,114 @@
+{
+  "type": "record",
+  "name": "SensorReading",
+  "namespace": "com.demo.iot.sensors",
+  "doc": "Environmental sensor readings for IoT platform",
+  "fields": [
+    {
+      "name": "device_id",
+      "type": "string",
+      "doc": "Unique device identifier"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Reading timestamp (UTC)"
+    },
+    {
+      "name": "location",
+      "type": {
+        "type": "record",
+        "name": "GeoLocation",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "double",
+            "doc": "Latitude in decimal degrees"
+          },
+          {
+            "name": "longitude",
+            "type": "double",
+            "doc": "Longitude in decimal degrees"
+          },
+          {
+            "name": "altitude",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Altitude in meters above sea level"
+          }
+        ]
+      },
+      "doc": "Geographic location of the sensor"
+    },
+    {
+      "name": "readings",
+      "type": {
+        "type": "record",
+        "name": "EnvironmentalReadings",
+        "fields": [
+          {
+            "name": "temperature_celsius",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Temperature in Celsius"
+          },
+          {
+            "name": "humidity_percent",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Relative humidity percentage (0-100)"
+          },
+          {
+            "name": "pressure_hpa",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Atmospheric pressure in hectopascals"
+          },
+          {
+            "name": "air_quality_index",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Air quality index (0-500)"
+          },
+          {
+            "name": "light_lux",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Light intensity in lux"
+          }
+        ]
+      },
+      "doc": "Environmental sensor readings"
+    },
+    {
+      "name": "device_info",
+      "type": {
+        "type": "record",
+        "name": "DeviceInfo",
+        "fields": [
+          {
+            "name": "battery_level",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Battery percentage (0-100)"
+          },
+          {
+            "name": "signal_strength",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Signal strength in dBm"
+          },
+          {
+            "name": "firmware_version",
+            "type": "string",
+            "doc": "Device firmware version"
+          }
+        ]
+      },
+      "doc": "Device status information"
+    }
+  ]
+}

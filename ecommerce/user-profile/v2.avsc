@@ -1,0 +1,136 @@
+{
+  "type": "record",
+  "name": "UserProfile",
+  "namespace": "com.demo.ecommerce.user",
+  "doc": "User profile information for e-commerce platform - v2 with GDPR compliance",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Unique user identifier (UUID)"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "doc": "User email address (primary identifier)"
+    },
+    {
+      "name": "name",
+      "type": {
+        "type": "record",
+        "name": "FullName",
+        "fields": [
+          {
+            "name": "first",
+            "type": "string",
+            "doc": "First name"
+          },
+          {
+            "name": "last",
+            "type": "string",
+            "doc": "Last name"
+          }
+        ]
+      },
+      "doc": "User's full name"
+    },
+    {
+      "name": "phone",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Phone number in E.164 format"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Account creation timestamp"
+    },
+    {
+      "name": "preferences",
+      "type": {
+        "type": "record",
+        "name": "UserPreferences",
+        "fields": [
+          {
+            "name": "newsletter",
+            "type": "boolean",
+            "default": false,
+            "doc": "Newsletter subscription preference"
+          },
+          {
+            "name": "language",
+            "type": {
+              "type": "enum",
+              "name": "Language",
+              "symbols": ["en", "es", "fr", "de", "it", "pt", "nl"]
+            },
+            "default": "en",
+            "doc": "Preferred language code"
+          },
+          {
+            "name": "currency",
+            "type": {
+              "type": "enum",
+              "name": "Currency",
+              "symbols": ["USD", "EUR", "GBP", "CAD", "AUD", "JPY"]
+            },
+            "default": "USD",
+            "doc": "Preferred currency code"
+          }
+        ]
+      },
+      "doc": "User preferences and settings"
+    },
+    {
+      "name": "gdpr_consent",
+      "type": {
+        "type": "record",
+        "name": "GDPRConsent",
+        "fields": [
+          {
+            "name": "marketing",
+            "type": "boolean",
+            "default": false,
+            "doc": "Consent for marketing communications"
+          },
+          {
+            "name": "analytics",
+            "type": "boolean",
+            "default": false,
+            "doc": "Consent for analytics and tracking"
+          },
+          {
+            "name": "data_sharing",
+            "type": "boolean",
+            "default": false,
+            "doc": "Consent for data sharing with partners"
+          },
+          {
+            "name": "consent_date",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "When consent was given"
+          }
+        ]
+      },
+      "default": {
+        "marketing": false,
+        "analytics": false,
+        "data_sharing": false,
+        "consent_date": 0
+      },
+      "doc": "GDPR consent tracking"
+    },
+    {
+      "name": "data_retention_days",
+      "type": "int",
+      "default": 2555,
+      "doc": "Data retention period in days (default: 7 years)"
+    }
+  ]
+}
