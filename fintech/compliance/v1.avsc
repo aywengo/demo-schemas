@@ -1,0 +1,318 @@
+{
+  "type": "record",
+  "name": "ComplianceEvent",
+  "namespace": "com.demo.fintech.compliance",
+  "doc": "Regulatory compliance and audit data - Initial version",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique compliance event identifier"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Customer identifier"
+    },
+    {
+      "name": "account_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Related account identifier"
+    },
+    {
+      "name": "transaction_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Related transaction identifier"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "ComplianceEventType",
+        "symbols": ["KYC_VERIFICATION", "AML_SCREENING", "SANCTIONS_CHECK", "SUSPICIOUS_ACTIVITY", "REGULATORY_REPORT", "AUDIT_LOG"]
+      },
+      "doc": "Type of compliance event"
+    },
+    {
+      "name": "severity",
+      "type": {
+        "type": "enum",
+        "name": "ComplianceSeverity",
+        "symbols": ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+      },
+      "doc": "Event severity level"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "ComplianceStatus",
+        "symbols": ["PENDING", "APPROVED", "REJECTED", "UNDER_REVIEW", "ESCALATED"]
+      },
+      "doc": "Current status of compliance event"
+    },
+    {
+      "name": "regulatory_framework",
+      "type": {
+        "type": "enum",
+        "name": "RegulatoryFramework",
+        "symbols": ["BSA", "AML", "FATCA", "CRS", "KYC", "GDPR", "PCI_DSS", "SOX", "BASEL_III"]
+      },
+      "doc": "Applicable regulatory framework"
+    },
+    {
+      "name": "risk_score",
+      "type": ["null", "int"],
+      "default": null,
+      "doc": "Risk score (1-100, higher = more risky)"
+    },
+    {
+      "name": "details",
+      "type": {
+        "type": "record",
+        "name": "ComplianceDetails",
+        "fields": [
+          {
+            "name": "description",
+            "type": "string",
+            "doc": "Event description"
+          },
+          {
+            "name": "source_system",
+            "type": "string",
+            "doc": "System that generated the event"
+          },
+          {
+            "name": "detection_method",
+            "type": {
+              "type": "enum",
+              "name": "DetectionMethod",
+              "symbols": ["AUTOMATED", "MANUAL", "THIRD_PARTY", "CUSTOMER_REPORT"]
+            },
+            "doc": "How the event was detected"
+          },
+          {
+            "name": "category",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Event category or classification"
+          },
+          {
+            "name": "subcategory",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Event subcategory"
+          }
+        ]
+      },
+      "doc": "Detailed compliance event information"
+    },
+    {
+      "name": "screening_results",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ScreeningResult",
+          "fields": [
+            {
+              "name": "list_name",
+              "type": "string",
+              "doc": "Name of the screening list (OFAC, EU, UN, etc.)"
+            },
+            {
+              "name": "match_status",
+              "type": {
+                "type": "enum",
+                "name": "MatchStatus",
+                "symbols": ["NO_MATCH", "POTENTIAL_MATCH", "CONFIRMED_MATCH", "FALSE_POSITIVE"]
+              },
+              "doc": "Match status"
+            },
+            {
+              "name": "confidence_score",
+              "type": ["null", "float"],
+              "default": null,
+              "doc": "Match confidence score (0.0-1.0)"
+            },
+            {
+              "name": "matched_entity",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Name of matched entity"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Results from various screening lists"
+    },
+    {
+      "name": "actions_taken",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ComplianceAction",
+          "fields": [
+            {
+              "name": "action_type",
+              "type": {
+                "type": "enum",
+                "name": "ComplianceActionType",
+                "symbols": ["BLOCK_TRANSACTION", "FREEZE_ACCOUNT", "REQUEST_DOCUMENTATION", "ESCALATE_TO_OFFICER", "FILE_SAR", "NOTIFY_AUTHORITIES"]
+              },
+              "doc": "Type of action taken"
+            },
+            {
+              "name": "taken_by",
+              "type": "string",
+              "doc": "User or system that took the action"
+            },
+            {
+              "name": "taken_at",
+              "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              },
+              "doc": "When action was taken"
+            },
+            {
+              "name": "notes",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Additional notes about the action"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Actions taken in response to the event"
+    },
+    {
+      "name": "documentation",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ComplianceDocument",
+          "fields": [
+            {
+              "name": "document_id",
+              "type": "string",
+              "doc": "Document identifier"
+            },
+            {
+              "name": "document_type",
+              "type": {
+                "type": "enum",
+                "name": "DocumentType",
+                "symbols": ["ID_VERIFICATION", "ADDRESS_PROOF", "INCOME_VERIFICATION", "SAR_FILING", "INVESTIGATION_REPORT"]
+              },
+              "doc": "Type of document"
+            },
+            {
+              "name": "file_path",
+              "type": "string",
+              "doc": "Secure file storage path"
+            },
+            {
+              "name": "uploaded_by",
+              "type": "string",
+              "doc": "User who uploaded the document"
+            },
+            {
+              "name": "uploaded_at",
+              "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              },
+              "doc": "Document upload timestamp"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Supporting documentation"
+    },
+    {
+      "name": "reporting_requirements",
+      "type": {
+        "type": "record",
+        "name": "ReportingRequirements",
+        "fields": [
+          {
+            "name": "requires_sar",
+            "type": "boolean",
+            "default": false,
+            "doc": "Requires Suspicious Activity Report"
+          },
+          {
+            "name": "requires_ctr",
+            "type": "boolean",
+            "default": false,
+            "doc": "Requires Currency Transaction Report"
+          },
+          {
+            "name": "requires_fatca",
+            "type": "boolean",
+            "default": false,
+            "doc": "Requires FATCA reporting"
+          },
+          {
+            "name": "deadline",
+            "type": ["null", {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }],
+            "default": null,
+            "doc": "Reporting deadline"
+          }
+        ]
+      },
+      "doc": "Regulatory reporting requirements"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional metadata"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Event creation timestamp"
+    },
+    {
+      "name": "updated_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last update timestamp"
+    },
+    {
+      "name": "reviewed_by",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Compliance officer who reviewed the event"
+    },
+    {
+      "name": "reviewed_at",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null,
+      "doc": "Review timestamp"
+    }
+  ]
+}

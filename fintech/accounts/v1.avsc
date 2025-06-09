@@ -1,0 +1,192 @@
+{
+  "type": "record",
+  "name": "Account",
+  "namespace": "com.demo.fintech.accounts",
+  "doc": "Financial account information - Initial version",
+  "fields": [
+    {
+      "name": "account_id",
+      "type": "string",
+      "doc": "Unique account identifier"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Customer identifier who owns the account"
+    },
+    {
+      "name": "account_type",
+      "type": {
+        "type": "enum",
+        "name": "AccountType",
+        "symbols": ["CHECKING", "SAVINGS", "INVESTMENT", "CREDIT_CARD", "LOAN", "MORTGAGE"]
+      },
+      "doc": "Type of financial account"
+    },
+    {
+      "name": "account_number",
+      "type": "string",
+      "doc": "Account number (masked for security)"
+    },
+    {
+      "name": "currency",
+      "type": {
+        "type": "enum",
+        "name": "Currency",
+        "symbols": ["USD", "EUR", "GBP", "CAD", "JPY", "AUD", "CHF"]
+      },
+      "doc": "Account currency"
+    },
+    {
+      "name": "balance",
+      "type": {
+        "type": "record",
+        "name": "Balance",
+        "fields": [
+          {
+            "name": "available",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "doc": "Available balance"
+          },
+          {
+            "name": "pending",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "doc": "Pending transactions amount"
+          },
+          {
+            "name": "total",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "doc": "Total balance including pending"
+          }
+        ]
+      },
+      "doc": "Account balance information"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "AccountStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "FROZEN", "CLOSED", "PENDING_APPROVAL"]
+      },
+      "default": "ACTIVE",
+      "doc": "Account status"
+    },
+    {
+      "name": "interest_rate",
+      "type": ["null", {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 5,
+        "scale": 4
+      }],
+      "default": null,
+      "doc": "Interest rate (for savings/loan accounts)"
+    },
+    {
+      "name": "credit_limit",
+      "type": ["null", {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 15,
+        "scale": 2
+      }],
+      "default": null,
+      "doc": "Credit limit (for credit accounts)"
+    },
+    {
+      "name": "minimum_balance",
+      "type": ["null", {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 15,
+        "scale": 2
+      }],
+      "default": null,
+      "doc": "Minimum required balance"
+    },
+    {
+      "name": "branch_code",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Branch code where account was opened"
+    },
+    {
+      "name": "product_code",
+      "type": "string",
+      "doc": "Financial product code"
+    },
+    {
+      "name": "terms_and_conditions",
+      "type": {
+        "type": "record",
+        "name": "TermsAndConditions",
+        "fields": [
+          {
+            "name": "version",
+            "type": "string",
+            "doc": "T&C version number"
+          },
+          {
+            "name": "accepted_at",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "When T&C were accepted"
+          },
+          {
+            "name": "accepted_via",
+            "type": {
+              "type": "enum",
+              "name": "AcceptanceChannel",
+              "symbols": ["ONLINE", "MOBILE_APP", "BRANCH", "PHONE", "MAIL"]
+            },
+            "doc": "Channel through which T&C were accepted"
+          }
+        ]
+      },
+      "doc": "Terms and conditions acceptance"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Account creation timestamp"
+    },
+    {
+      "name": "updated_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last update timestamp"
+    },
+    {
+      "name": "last_activity_at",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null,
+      "doc": "Last account activity timestamp"
+    }
+  ]
+}

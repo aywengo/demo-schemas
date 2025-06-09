@@ -1,0 +1,389 @@
+{
+  "type": "record",
+  "name": "Account",
+  "namespace": "com.demo.fintech.accounts",
+  "doc": "Financial account information - v2 with enhanced compliance and multi-currency support",
+  "fields": [
+    {
+      "name": "account_id",
+      "type": "string",
+      "doc": "Unique account identifier"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Customer identifier who owns the account"
+    },
+    {
+      "name": "account_type",
+      "type": {
+        "type": "enum",
+        "name": "AccountType",
+        "symbols": ["CHECKING", "SAVINGS", "INVESTMENT", "CREDIT_CARD", "LOAN", "MORTGAGE", "MONEY_MARKET", "CD", "BUSINESS_CHECKING", "BUSINESS_SAVINGS"]
+      },
+      "doc": "Type of financial account"
+    },
+    {
+      "name": "account_number",
+      "type": "string",
+      "doc": "Account number (masked for security)"
+    },
+    {
+      "name": "iban",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "International Bank Account Number"
+    },
+    {
+      "name": "swift_code",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "SWIFT/BIC code for international transfers"
+    },
+    {
+      "name": "primary_currency",
+      "type": {
+        "type": "enum",
+        "name": "Currency",
+        "symbols": ["USD", "EUR", "GBP", "CAD", "JPY", "AUD", "CHF", "SEK", "NOK", "DKK"]
+      },
+      "doc": "Primary account currency"
+    },
+    {
+      "name": "supported_currencies",
+      "type": {
+        "type": "array",
+        "items": "Currency"
+      },
+      "default": [],
+      "doc": "Additional supported currencies for multi-currency accounts"
+    },
+    {
+      "name": "balance",
+      "type": {
+        "type": "record",
+        "name": "Balance",
+        "fields": [
+          {
+            "name": "available",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "doc": "Available balance"
+          },
+          {
+            "name": "pending",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "doc": "Pending transactions amount"
+          },
+          {
+            "name": "total",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "doc": "Total balance including pending"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            },
+            "default": "\u0000\u0000",
+            "doc": "Reserved funds (holds, guarantees)"
+          }
+        ]
+      },
+      "doc": "Account balance information"
+    },
+    {
+      "name": "multi_currency_balances",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "record",
+          "name": "CurrencyBalance",
+          "fields": [
+            {
+              "name": "available",
+              "type": {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 15,
+                "scale": 2
+              }
+            },
+            {
+              "name": "pending",
+              "type": {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 15,
+                "scale": 2
+              }
+            },
+            {
+              "name": "total",
+              "type": {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 15,
+                "scale": 2
+              }
+            }
+          ]
+        }
+      },
+      "default": {},
+      "doc": "Balances in different currencies (currency code -> balance)"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "AccountStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "FROZEN", "CLOSED", "PENDING_APPROVAL", "SUSPENDED", "DORMANT"]
+      },
+      "default": "ACTIVE",
+      "doc": "Account status"
+    },
+    {
+      "name": "compliance_status",
+      "type": {
+        "type": "record",
+        "name": "ComplianceStatus",
+        "fields": [
+          {
+            "name": "kyc_status",
+            "type": {
+              "type": "enum",
+              "name": "KYCStatus",
+              "symbols": ["PENDING", "VERIFIED", "FAILED", "EXPIRED", "UNDER_REVIEW"]
+            },
+            "doc": "Know Your Customer verification status"
+          },
+          {
+            "name": "aml_risk_level",
+            "type": {
+              "type": "enum",
+              "name": "AMLRiskLevel",
+              "symbols": ["LOW", "MEDIUM", "HIGH", "PROHIBITED"]
+            },
+            "default": "LOW",
+            "doc": "Anti-Money Laundering risk level"
+          },
+          {
+            "name": "sanctions_check",
+            "type": {
+              "type": "enum",
+              "name": "SanctionsStatus",
+              "symbols": ["CLEAR", "MATCH", "PENDING", "WHITELIST"]
+            },
+            "default": "CLEAR",
+            "doc": "Sanctions screening status"
+          },
+          {
+            "name": "pep_status",
+            "type": "boolean",
+            "default": false,
+            "doc": "Politically Exposed Person status"
+          },
+          {
+            "name": "last_reviewed",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "Last compliance review timestamp"
+          }
+        ]
+      },
+      "doc": "Compliance and regulatory status"
+    },
+    {
+      "name": "interest_rate",
+      "type": ["null", {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 5,
+        "scale": 4
+      }],
+      "default": null,
+      "doc": "Interest rate (for savings/loan accounts)"
+    },
+    {
+      "name": "credit_limit",
+      "type": ["null", {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 15,
+        "scale": 2
+      }],
+      "default": null,
+      "doc": "Credit limit (for credit accounts)"
+    },
+    {
+      "name": "minimum_balance",
+      "type": ["null", {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 15,
+        "scale": 2
+      }],
+      "default": null,
+      "doc": "Minimum required balance"
+    },
+    {
+      "name": "overdraft_protection",
+      "type": {
+        "type": "record",
+        "name": "OverdraftProtection",
+        "fields": [
+          {
+            "name": "enabled",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether overdraft protection is enabled"
+          },
+          {
+            "name": "limit",
+            "type": ["null", {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            }],
+            "default": null,
+            "doc": "Overdraft limit"
+          },
+          {
+            "name": "fee",
+            "type": ["null", {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 10,
+              "scale": 2
+            }],
+            "default": null,
+            "doc": "Overdraft fee"
+          }
+        ]
+      },
+      "default": {"enabled": false, "limit": null, "fee": null},
+      "doc": "Overdraft protection settings"
+    },
+    {
+      "name": "branch_code",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Branch code where account was opened"
+    },
+    {
+      "name": "product_code",
+      "type": "string",
+      "doc": "Financial product code"
+    },
+    {
+      "name": "terms_and_conditions",
+      "type": {
+        "type": "record",
+        "name": "TermsAndConditions",
+        "fields": [
+          {
+            "name": "version",
+            "type": "string",
+            "doc": "T&C version number"
+          },
+          {
+            "name": "accepted_at",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "When T&C were accepted"
+          },
+          {
+            "name": "accepted_via",
+            "type": {
+              "type": "enum",
+              "name": "AcceptanceChannel",
+              "symbols": ["ONLINE", "MOBILE_APP", "BRANCH", "PHONE", "MAIL", "VIDEO_CALL"]
+            },
+            "doc": "Channel through which T&C were accepted"
+          }
+        ]
+      },
+      "doc": "Terms and conditions acceptance"
+    },
+    {
+      "name": "regulatory_reporting",
+      "type": {
+        "type": "record",
+        "name": "RegulatoryReporting",
+        "fields": [
+          {
+            "name": "fatca_reportable",
+            "type": "boolean",
+            "default": false,
+            "doc": "Subject to FATCA reporting"
+          },
+          {
+            "name": "crs_reportable",
+            "type": "boolean",
+            "default": false,
+            "doc": "Subject to Common Reporting Standard"
+          },
+          {
+            "name": "tax_residence_countries",
+            "type": {
+              "type": "array",
+              "items": "string"
+            },
+            "default": [],
+            "doc": "Countries of tax residence (ISO 3166-1 alpha-2)"
+          }
+        ]
+      },
+      "default": {"fatca_reportable": false, "crs_reportable": false, "tax_residence_countries": []},
+      "doc": "Regulatory reporting requirements"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Account creation timestamp"
+    },
+    {
+      "name": "updated_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last update timestamp"
+    },
+    {
+      "name": "last_activity_at",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null,
+      "doc": "Last account activity timestamp"
+    }
+  ]
+}

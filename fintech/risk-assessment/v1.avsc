@@ -1,0 +1,365 @@
+{
+  "type": "record",
+  "name": "RiskAssessment",
+  "namespace": "com.demo.fintech.risk",
+  "doc": "Fraud detection and risk scoring data - Initial version",
+  "fields": [
+    {
+      "name": "assessment_id",
+      "type": "string",
+      "doc": "Unique risk assessment identifier"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Customer identifier"
+    },
+    {
+      "name": "transaction_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Related transaction identifier"
+    },
+    {
+      "name": "account_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Related account identifier"
+    },
+    {
+      "name": "assessment_type",
+      "type": {
+        "type": "enum",
+        "name": "AssessmentType",
+        "symbols": ["TRANSACTION_SCREENING", "CUSTOMER_ONBOARDING", "PERIODIC_REVIEW", "EVENT_TRIGGERED", "MANUAL_REVIEW"]
+      },
+      "doc": "Type of risk assessment"
+    },
+    {
+      "name": "risk_category",
+      "type": {
+        "type": "enum",
+        "name": "RiskCategory",
+        "symbols": ["FRAUD", "MONEY_LAUNDERING", "TERRORISM_FINANCING", "SANCTIONS", "IDENTITY_THEFT", "CREDIT_RISK"]
+      },
+      "doc": "Primary risk category"
+    },
+    {
+      "name": "overall_risk_score",
+      "type": "int",
+      "doc": "Overall risk score (1-1000, higher = more risky)"
+    },
+    {
+      "name": "risk_level",
+      "type": {
+        "type": "enum",
+        "name": "RiskLevel",
+        "symbols": ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH", "CRITICAL"]
+      },
+      "doc": "Risk level classification"
+    },
+    {
+      "name": "fraud_indicators",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "FraudIndicator",
+          "fields": [
+            {
+              "name": "indicator_type",
+              "type": {
+                "type": "enum",
+                "name": "FraudIndicatorType",
+                "symbols": ["VELOCITY", "LOCATION_ANOMALY", "DEVICE_FINGERPRINT", "BEHAVIORAL_PATTERN", "AMOUNT_ANOMALY", "TIME_ANOMALY"]
+              },
+              "doc": "Type of fraud indicator"
+            },
+            {
+              "name": "score",
+              "type": "int",
+              "doc": "Indicator score (1-100)"
+            },
+            {
+              "name": "description",
+              "type": "string",
+              "doc": "Human-readable description"
+            },
+            {
+              "name": "triggered_rules",
+              "type": {
+                "type": "array",
+                "items": "string"
+              },
+              "doc": "List of rule IDs that triggered this indicator"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Fraud indicators detected"
+    },
+    {
+      "name": "device_analysis",
+      "type": {
+        "type": "record",
+        "name": "DeviceAnalysis",
+        "fields": [
+          {
+            "name": "device_fingerprint",
+            "type": "string",
+            "doc": "Unique device fingerprint"
+          },
+          {
+            "name": "device_trust_score",
+            "type": "int",
+            "doc": "Device trust score (1-100)"
+          },
+          {
+            "name": "first_seen",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "When device was first seen"
+          },
+          {
+            "name": "usage_count",
+            "type": "int",
+            "doc": "Number of times device has been used"
+          },
+          {
+            "name": "is_known_device",
+            "type": "boolean",
+            "doc": "Whether device is recognized"
+          },
+          {
+            "name": "device_reputation",
+            "type": {
+              "type": "enum",
+              "name": "DeviceReputation",
+              "symbols": ["TRUSTED", "NEUTRAL", "SUSPICIOUS", "BLACKLISTED"]
+            },
+            "doc": "Device reputation status"
+          }
+        ]
+      },
+      "doc": "Device-based risk analysis"
+    },
+    {
+      "name": "location_analysis",
+      "type": {
+        "type": "record",
+        "name": "LocationAnalysis",
+        "fields": [
+          {
+            "name": "ip_address",
+            "type": "string",
+            "doc": "IP address (masked for privacy)"
+          },
+          {
+            "name": "country_code",
+            "type": "string",
+            "doc": "Country code (ISO 3166-1 alpha-2)"
+          },
+          {
+            "name": "city",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "City name"
+          },
+          {
+            "name": "is_vpn",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether connection appears to be from VPN"
+          },
+          {
+            "name": "is_tor",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether connection appears to be from Tor"
+          },
+          {
+            "name": "location_risk_score",
+            "type": "int",
+            "doc": "Location-based risk score (1-100)"
+          },
+          {
+            "name": "distance_from_usual",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Distance in km from usual location"
+          }
+        ]
+      },
+      "doc": "Location-based risk analysis"
+    },
+    {
+      "name": "behavioral_analysis",
+      "type": {
+        "type": "record",
+        "name": "BehavioralAnalysis",
+        "fields": [
+          {
+            "name": "transaction_velocity",
+            "type": {
+              "type": "record",
+              "name": "TransactionVelocity",
+              "fields": [
+                {
+                  "name": "count_last_hour",
+                  "type": "int",
+                  "doc": "Number of transactions in last hour"
+                },
+                {
+                  "name": "count_last_day",
+                  "type": "int",
+                  "doc": "Number of transactions in last 24 hours"
+                },
+                {
+                  "name": "amount_last_hour",
+                  "type": {
+                    "type": "bytes",
+                    "logicalType": "decimal",
+                    "precision": 15,
+                    "scale": 2
+                  },
+                  "doc": "Total amount in last hour"
+                },
+                {
+                  "name": "amount_last_day",
+                  "type": {
+                    "type": "bytes",
+                    "logicalType": "decimal",
+                    "precision": 15,
+                    "scale": 2
+                  },
+                  "doc": "Total amount in last 24 hours"
+                }
+              ]
+            },
+            "doc": "Transaction velocity metrics"
+          },
+          {
+            "name": "unusual_patterns",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "UnusualPattern",
+                "fields": [
+                  {
+                    "name": "pattern_type",
+                    "type": "string",
+                    "doc": "Type of unusual pattern"
+                  },
+                  {
+                    "name": "description",
+                    "type": "string",
+                    "doc": "Pattern description"
+                  },
+                  {
+                    "name": "confidence",
+                    "type": "float",
+                    "doc": "Confidence level (0.0-1.0)"
+                  }
+                ]
+              }
+            },
+            "default": [],
+            "doc": "Detected unusual behavioral patterns"
+          }
+        ]
+      },
+      "doc": "Behavioral pattern analysis"
+    },
+    {
+      "name": "model_results",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ModelResult",
+          "fields": [
+            {
+              "name": "model_name",
+              "type": "string",
+              "doc": "Name of the ML model"
+            },
+            {
+              "name": "model_version",
+              "type": "string",
+              "doc": "Version of the ML model"
+            },
+            {
+              "name": "score",
+              "type": "float",
+              "doc": "Model output score"
+            },
+            {
+              "name": "prediction",
+              "type": {
+                "type": "enum",
+                "name": "ModelPrediction",
+                "symbols": ["LEGITIMATE", "SUSPICIOUS", "FRAUDULENT"]
+              },
+              "doc": "Model prediction"
+            },
+            {
+              "name": "features_used",
+              "type": {
+                "type": "array",
+                "items": "string"
+              },
+              "doc": "Features used by the model"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Results from ML models"
+    },
+    {
+      "name": "decision",
+      "type": {
+        "type": "enum",
+        "name": "RiskDecision",
+        "symbols": ["APPROVE", "REVIEW", "DECLINE", "BLOCK"]
+      },
+      "doc": "Final risk decision"
+    },
+    {
+      "name": "confidence_level",
+      "type": "float",
+      "doc": "Confidence in the assessment (0.0-1.0)"
+    },
+    {
+      "name": "escalation_required",
+      "type": "boolean",
+      "default": false,
+      "doc": "Whether manual review is required"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Assessment creation timestamp"
+    },
+    {
+      "name": "completed_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Assessment completion timestamp"
+    },
+    {
+      "name": "processing_time_ms",
+      "type": "long",
+      "doc": "Time taken to complete assessment in milliseconds"
+    }
+  ]
+}
