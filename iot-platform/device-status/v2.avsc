@@ -1,0 +1,343 @@
+{
+  "type": "record",
+  "name": "DeviceStatus",
+  "namespace": "com.demo.iot.device",
+  "doc": "IoT device health and connectivity status - v2 with enhanced monitoring and edge computing",
+  "fields": [
+    {
+      "name": "device_id",
+      "type": "string",
+      "doc": "Unique device identifier"
+    },
+    {
+      "name": "device_type",
+      "type": {
+        "type": "enum",
+        "name": "DeviceType",
+        "symbols": ["TEMPERATURE_SENSOR", "HUMIDITY_SENSOR", "AIR_QUALITY_MONITOR", "SMART_CAMERA", "MOTION_DETECTOR", "GATEWAY", "EDGE_COMPUTE_NODE", "ENVIRONMENTAL_STATION"]
+      },
+      "doc": "Type of IoT device"
+    },
+    {
+      "name": "device_group",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Device group or cluster identifier"
+    },
+    {
+      "name": "location",
+      "type": {
+        "type": "record",
+        "name": "DeviceLocation",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "double",
+            "doc": "Device latitude coordinate"
+          },
+          {
+            "name": "longitude",
+            "type": "double",
+            "doc": "Device longitude coordinate"
+          },
+          {
+            "name": "altitude",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Device altitude in meters"
+          },
+          {
+            "name": "zone",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Logical zone or area identifier"
+          },
+          {
+            "name": "building",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Building identifier"
+          },
+          {
+            "name": "floor",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Floor identifier"
+          },
+          {
+            "name": "room",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Room identifier"
+          }
+        ]
+      },
+      "doc": "Physical location of the device"
+    },
+    {
+      "name": "connectivity",
+      "type": {
+        "type": "record",
+        "name": "ConnectivityStatus",
+        "fields": [
+          {
+            "name": "status",
+            "type": {
+              "type": "enum",
+              "name": "ConnectionStatus",
+              "symbols": ["ONLINE", "OFFLINE", "INTERMITTENT", "MAINTENANCE"]
+            },
+            "doc": "Current connectivity status"
+          },
+          {
+            "name": "signal_strength",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Signal strength in dBm"
+          },
+          {
+            "name": "network_type",
+            "type": {
+              "type": "enum",
+              "name": "NetworkType",
+              "symbols": ["WIFI", "CELLULAR_4G", "CELLULAR_5G", "LORA", "ZIGBEE", "ETHERNET", "SATELLITE", "NB_IOT"]
+            },
+            "doc": "Network connection type"
+          },
+          {
+            "name": "data_usage",
+            "type": {
+              "type": "record",
+              "name": "DataUsage",
+              "fields": [
+                {
+                  "name": "bytes_sent",
+                  "type": "long",
+                  "default": 0,
+                  "doc": "Bytes sent since last reset"
+                },
+                {
+                  "name": "bytes_received",
+                  "type": "long",
+                  "default": 0,
+                  "doc": "Bytes received since last reset"
+                },
+                {
+                  "name": "messages_sent",
+                  "type": "long",
+                  "default": 0,
+                  "doc": "Messages sent count"
+                },
+                {
+                  "name": "messages_received",
+                  "type": "long",
+                  "default": 0,
+                  "doc": "Messages received count"
+                }
+              ]
+            },
+            "default": {"bytes_sent": 0, "bytes_received": 0, "messages_sent": 0, "messages_received": 0},
+            "doc": "Data usage statistics"
+          },
+          {
+            "name": "last_seen",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "Last successful communication timestamp"
+          }
+        ]
+      },
+      "doc": "Device connectivity information"
+    },
+    {
+      "name": "health",
+      "type": {
+        "type": "record",
+        "name": "DeviceHealth",
+        "fields": [
+          {
+            "name": "battery_level",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Battery level percentage (0-100)"
+          },
+          {
+            "name": "temperature",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Device internal temperature in Celsius"
+          },
+          {
+            "name": "memory_usage",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Memory usage percentage (0-100)"
+          },
+          {
+            "name": "cpu_usage",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "CPU usage percentage (0-100)"
+          },
+          {
+            "name": "storage_usage",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Storage usage percentage (0-100)"
+          },
+          {
+            "name": "uptime_seconds",
+            "type": "long",
+            "doc": "Device uptime in seconds"
+          },
+          {
+            "name": "restart_count",
+            "type": "int",
+            "default": 0,
+            "doc": "Number of restarts since deployment"
+          }
+        ]
+      },
+      "doc": "Device health metrics"
+    },
+    {
+      "name": "firmware",
+      "type": {
+        "type": "record",
+        "name": "FirmwareInfo",
+        "fields": [
+          {
+            "name": "version",
+            "type": "string",
+            "doc": "Current firmware version"
+          },
+          {
+            "name": "last_updated",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "Last firmware update timestamp"
+          },
+          {
+            "name": "update_available",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether a firmware update is available"
+          },
+          {
+            "name": "update_channel",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Firmware update channel (stable, beta, alpha)"
+          }
+        ]
+      },
+      "doc": "Firmware information"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "DeviceStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "MAINTENANCE", "ERROR", "DECOMMISSIONED"]
+      },
+      "doc": "Overall device operational status"
+    },
+    {
+      "name": "error_conditions",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ErrorCondition",
+          "fields": [
+            {
+              "name": "code",
+              "type": "string",
+              "doc": "Error code"
+            },
+            {
+              "name": "message",
+              "type": "string",
+              "doc": "Human-readable error message"
+            },
+            {
+              "name": "severity",
+              "type": {
+                "type": "enum",
+                "name": "ErrorSeverity",
+                "symbols": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+              },
+              "doc": "Error severity level"
+            },
+            {
+              "name": "first_occurred",
+              "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              },
+              "doc": "When error first occurred"
+            },
+            {
+              "name": "count",
+              "type": "int",
+              "default": 1,
+              "doc": "Number of times this error has occurred"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Current error conditions"
+    },
+    {
+      "name": "performance_metrics",
+      "type": {
+        "type": "record",
+        "name": "PerformanceMetrics",
+        "fields": [
+          {
+            "name": "data_processing_rate",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Data processing rate (messages/second)"
+          },
+          {
+            "name": "average_response_time",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Average response time in milliseconds"
+          },
+          {
+            "name": "edge_compute_utilization",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Edge computing resource utilization percentage"
+          }
+        ]
+      },
+      "default": {"data_processing_rate": null, "average_response_time": null, "edge_compute_utilization": null},
+      "doc": "Device performance metrics"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional device metadata"
+    },
+    {
+      "name": "reported_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Status report timestamp"
+    }
+  ]
+}
