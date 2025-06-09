@@ -1,0 +1,219 @@
+{
+  "type": "record",
+  "name": "WebhookPayload",
+  "namespace": "com.demo.saas.webhooks",
+  "doc": "Webhook integration payloads for customer systems - Initial version",
+  "fields": [
+    {
+      "name": "webhook_id",
+      "type": "string",
+      "doc": "Unique webhook delivery identifier"
+    },
+    {
+      "name": "tenant_id",
+      "type": "string",
+      "doc": "Tenant/customer identifier"
+    },
+    {
+      "name": "endpoint_id",
+      "type": "string",
+      "doc": "Webhook endpoint configuration identifier"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "WebhookEventType",
+        "symbols": ["USER_CREATED", "USER_UPDATED", "USER_DELETED", "SUBSCRIPTION_CREATED", "SUBSCRIPTION_UPDATED", "SUBSCRIPTION_CANCELLED", "PAYMENT_SUCCESS", "PAYMENT_FAILED", "FEATURE_USED", "LIMIT_EXCEEDED"]
+      },
+      "doc": "Type of event that triggered the webhook"
+    },
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Original event identifier that triggered this webhook"
+    },
+    {
+      "name": "payload",
+      "type": {
+        "type": "record",
+        "name": "EventPayload",
+        "fields": [
+          {
+            "name": "object_type",
+            "type": "string",
+            "doc": "Type of object affected (user, subscription, payment, etc.)"
+          },
+          {
+            "name": "object_id",
+            "type": "string",
+            "doc": "Identifier of the affected object"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "doc": "Action performed (created, updated, deleted, etc.)"
+          },
+          {
+            "name": "data",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "doc": "Event data as key-value pairs"
+          },
+          {
+            "name": "previous_data",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "default": {},
+            "doc": "Previous state data (for update events)"
+          }
+        ]
+      },
+      "doc": "Event payload data"
+    },
+    {
+      "name": "delivery_info",
+      "type": {
+        "type": "record",
+        "name": "DeliveryInfo",
+        "fields": [
+          {
+            "name": "url",
+            "type": "string",
+            "doc": "Webhook delivery URL"
+          },
+          {
+            "name": "method",
+            "type": {
+              "type": "enum",
+              "name": "HttpMethod",
+              "symbols": ["POST", "PUT", "PATCH"]
+            },
+            "default": "POST",
+            "doc": "HTTP method used for delivery"
+          },
+          {
+            "name": "headers",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "default": {},
+            "doc": "HTTP headers to include"
+          },
+          {
+            "name": "timeout_seconds",
+            "type": "int",
+            "default": 30,
+            "doc": "Request timeout in seconds"
+          }
+        ]
+      },
+      "doc": "Webhook delivery configuration"
+    },
+    {
+      "name": "security",
+      "type": {
+        "type": "record",
+        "name": "WebhookSecurity",
+        "fields": [
+          {
+            "name": "signature_method",
+            "type": {
+              "type": "enum",
+              "name": "SignatureMethod",
+              "symbols": ["HMAC_SHA256", "HMAC_SHA512", "NONE"]
+            },
+            "default": "HMAC_SHA256",
+            "doc": "Signature method used"
+          },
+          {
+            "name": "signature",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Webhook signature for verification"
+          },
+          {
+            "name": "timestamp",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "Signature timestamp"
+          }
+        ]
+      },
+      "doc": "Security and verification data"
+    },
+    {
+      "name": "retry_info",
+      "type": {
+        "type": "record",
+        "name": "RetryInfo",
+        "fields": [
+          {
+            "name": "attempt",
+            "type": "int",
+            "default": 1,
+            "doc": "Current delivery attempt number"
+          },
+          {
+            "name": "max_attempts",
+            "type": "int",
+            "default": 3,
+            "doc": "Maximum number of delivery attempts"
+          },
+          {
+            "name": "next_retry_at",
+            "type": ["null", {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }],
+            "default": null,
+            "doc": "Timestamp of next retry attempt"
+          },
+          {
+            "name": "retry_strategy",
+            "type": {
+              "type": "enum",
+              "name": "RetryStrategy",
+              "symbols": ["LINEAR", "EXPONENTIAL", "FIXED"]
+            },
+            "default": "EXPONENTIAL",
+            "doc": "Retry backoff strategy"
+          }
+        ]
+      },
+      "doc": "Retry configuration and status"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional metadata"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Webhook creation timestamp"
+    },
+    {
+      "name": "scheduled_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Scheduled delivery timestamp"
+    }
+  ]
+}

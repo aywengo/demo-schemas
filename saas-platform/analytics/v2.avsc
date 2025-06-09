@@ -1,0 +1,409 @@
+{
+  "type": "record",
+  "name": "AnalyticsEvent",
+  "namespace": "com.demo.saas.analytics",
+  "doc": "Business intelligence and analytics data for multi-tenant SaaS - v2 with enhanced attribution and ML features",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique event identifier"
+    },
+    {
+      "name": "tenant_id",
+      "type": "string",
+      "doc": "Tenant/customer identifier"
+    },
+    {
+      "name": "user_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "User identifier (null for system events)"
+    },
+    {
+      "name": "session_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "User session identifier"
+    },
+    {
+      "name": "anonymous_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Anonymous user identifier for cross-session tracking"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "AnalyticsEventType",
+        "symbols": ["PAGE_VIEW", "FEATURE_USAGE", "API_CALL", "CONVERSION", "ENGAGEMENT", "PERFORMANCE", "ERROR", "FUNNEL_STEP", "RETENTION_POINT"]
+      },
+      "doc": "Type of analytics event"
+    },
+    {
+      "name": "category",
+      "type": "string",
+      "doc": "Event category (e.g., 'user_interaction', 'system_performance')"
+    },
+    {
+      "name": "action",
+      "type": "string",
+      "doc": "Specific action taken (e.g., 'button_click', 'file_upload')"
+    },
+    {
+      "name": "funnel_info",
+      "type": {
+        "type": "record",
+        "name": "FunnelInfo",
+        "fields": [
+          {
+            "name": "funnel_name",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Name of the conversion funnel"
+          },
+          {
+            "name": "step_name",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Current funnel step"
+          },
+          {
+            "name": "step_number",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Step number in funnel (1-based)"
+          },
+          {
+            "name": "total_steps",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Total number of steps in funnel"
+          }
+        ]
+      },
+      "default": {"funnel_name": null, "step_name": null, "step_number": null, "total_steps": null},
+      "doc": "Conversion funnel information"
+    },
+    {
+      "name": "attribution",
+      "type": {
+        "type": "record",
+        "name": "Attribution",
+        "fields": [
+          {
+            "name": "utm_source",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "UTM source parameter"
+          },
+          {
+            "name": "utm_medium",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "UTM medium parameter"
+          },
+          {
+            "name": "utm_campaign",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "UTM campaign parameter"
+          },
+          {
+            "name": "utm_term",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "UTM term parameter"
+          },
+          {
+            "name": "utm_content",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "UTM content parameter"
+          },
+          {
+            "name": "first_touch_channel",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "First touch attribution channel"
+          },
+          {
+            "name": "last_touch_channel",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Last touch attribution channel"
+          }
+        ]
+      },
+      "default": {"utm_source": null, "utm_medium": null, "utm_campaign": null, "utm_term": null, "utm_content": null, "first_touch_channel": null, "last_touch_channel": null},
+      "doc": "Marketing attribution data"
+    },
+    {
+      "name": "properties",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Event properties as key-value pairs"
+    },
+    {
+      "name": "metrics",
+      "type": {
+        "type": "record",
+        "name": "EventMetrics",
+        "fields": [
+          {
+            "name": "duration_ms",
+            "type": ["null", "long"],
+            "default": null,
+            "doc": "Event duration in milliseconds"
+          },
+          {
+            "name": "value",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Numeric value associated with event"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "default": 1,
+            "doc": "Event count (for aggregated events)"
+          },
+          {
+            "name": "revenue",
+            "type": ["null", {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 15,
+              "scale": 2
+            }],
+            "default": null,
+            "doc": "Revenue amount associated with event"
+          }
+        ]
+      },
+      "doc": "Event metrics and measurements"
+    },
+    {
+      "name": "context",
+      "type": {
+        "type": "record",
+        "name": "EventContext",
+        "fields": [
+          {
+            "name": "page_url",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Page URL where event occurred"
+          },
+          {
+            "name": "page_title",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Page title"
+          },
+          {
+            "name": "referrer",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Referrer URL"
+          },
+          {
+            "name": "user_agent",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User agent string"
+          },
+          {
+            "name": "ip_address",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Client IP address (masked for privacy)"
+          },
+          {
+            "name": "device_type",
+            "type": ["null", {
+              "type": "enum",
+              "name": "DeviceType",
+              "symbols": ["DESKTOP", "MOBILE", "TABLET", "API", "UNKNOWN"]
+            }],
+            "default": null,
+            "doc": "Device type"
+          },
+          {
+            "name": "browser",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Browser name and version"
+          },
+          {
+            "name": "os",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Operating system"
+          },
+          {
+            "name": "screen_resolution",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Screen resolution (e.g., '1920x1080')"
+          },
+          {
+            "name": "timezone",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User timezone"
+          },
+          {
+            "name": "locale",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User locale (e.g., 'en-US')"
+          }
+        ]
+      },
+      "doc": "Event context information"
+    },
+    {
+      "name": "cohort_info",
+      "type": {
+        "type": "record",
+        "name": "CohortInfo",
+        "fields": [
+          {
+            "name": "signup_cohort",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User signup cohort (e.g., '2024-01')"
+          },
+          {
+            "name": "plan_tier",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Current subscription plan tier"
+          },
+          {
+            "name": "user_segment",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User behavioral segment"
+          },
+          {
+            "name": "days_since_signup",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Number of days since user signup"
+          }
+        ]
+      },
+      "default": {"signup_cohort": null, "plan_tier": null, "user_segment": null, "days_since_signup": null},
+      "doc": "User cohort and segmentation data"
+    },
+    {
+      "name": "feature_flags",
+      "type": {
+        "type": "map",
+        "values": "boolean"
+      },
+      "default": {},
+      "doc": "Active feature flags at time of event"
+    },
+    {
+      "name": "experiment_variants",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "A/B test variants active for user"
+    },
+    {
+      "name": "ml_features",
+      "type": {
+        "type": "record",
+        "name": "MLFeatures",
+        "fields": [
+          {
+            "name": "user_score",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "ML-generated user engagement score"
+          },
+          {
+            "name": "churn_probability",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Predicted churn probability (0.0-1.0)"
+          },
+          {
+            "name": "ltv_prediction",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Predicted customer lifetime value"
+          },
+          {
+            "name": "propensity_scores",
+            "type": {
+              "type": "map",
+              "values": "float"
+            },
+            "default": {},
+            "doc": "Propensity scores for various actions"
+          }
+        ]
+      },
+      "default": {"user_score": null, "churn_probability": null, "ltv_prediction": null, "propensity_scores": {}},
+      "doc": "Machine learning features and predictions"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Event timestamp"
+    },
+    {
+      "name": "server_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Server-side timestamp when event was received"
+    },
+    {
+      "name": "processing_metadata",
+      "type": {
+        "type": "record",
+        "name": "ProcessingMetadata",
+        "fields": [
+          {
+            "name": "ingestion_timestamp",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "When event was ingested into analytics pipeline"
+          },
+          {
+            "name": "pipeline_version",
+            "type": "string",
+            "default": "unknown",
+            "doc": "Version of analytics pipeline that processed event"
+          },
+          {
+            "name": "data_quality_score",
+            "type": "float",
+            "default": 1.0,
+            "doc": "Data quality score (0.0-1.0)"
+          }
+        ]
+      },
+      "default": {"ingestion_timestamp": 0, "pipeline_version": "unknown", "data_quality_score": 1.0},
+      "doc": "Event processing metadata"
+    }
+  ]
+}

@@ -1,0 +1,392 @@
+{
+  "type": "record",
+  "name": "WebhookPayload",
+  "namespace": "com.demo.saas.webhooks",
+  "doc": "Webhook integration payloads for customer systems - v2 with enhanced delivery tracking and filtering",
+  "fields": [
+    {
+      "name": "webhook_id",
+      "type": "string",
+      "doc": "Unique webhook delivery identifier"
+    },
+    {
+      "name": "tenant_id",
+      "type": "string",
+      "doc": "Tenant/customer identifier"
+    },
+    {
+      "name": "endpoint_id",
+      "type": "string",
+      "doc": "Webhook endpoint configuration identifier"
+    },
+    {
+      "name": "subscription_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Webhook subscription identifier"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "WebhookEventType",
+        "symbols": ["USER_CREATED", "USER_UPDATED", "USER_DELETED", "SUBSCRIPTION_CREATED", "SUBSCRIPTION_UPDATED", "SUBSCRIPTION_CANCELLED", "PAYMENT_SUCCESS", "PAYMENT_FAILED", "FEATURE_USED", "LIMIT_EXCEEDED", "INTEGRATION_CONNECTED", "INTEGRATION_DISCONNECTED", "DATA_EXPORT_READY", "SYSTEM_MAINTENANCE"]
+      },
+      "doc": "Type of event that triggered the webhook"
+    },
+    {
+      "name": "event_version",
+      "type": "string",
+      "default": "1.0",
+      "doc": "Version of the event schema"
+    },
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Original event identifier that triggered this webhook"
+    },
+    {
+      "name": "correlation_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Correlation ID for tracking related events"
+    },
+    {
+      "name": "payload",
+      "type": {
+        "type": "record",
+        "name": "EventPayload",
+        "fields": [
+          {
+            "name": "object_type",
+            "type": "string",
+            "doc": "Type of object affected (user, subscription, payment, etc.)"
+          },
+          {
+            "name": "object_id",
+            "type": "string",
+            "doc": "Identifier of the affected object"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "doc": "Action performed (created, updated, deleted, etc.)"
+          },
+          {
+            "name": "data",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "doc": "Event data as key-value pairs"
+          },
+          {
+            "name": "previous_data",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "default": {},
+            "doc": "Previous state data (for update events)"
+          },
+          {
+            "name": "changed_fields",
+            "type": {
+              "type": "array",
+              "items": "string"
+            },
+            "default": [],
+            "doc": "List of fields that changed (for update events)"
+          }
+        ]
+      },
+      "doc": "Event payload data"
+    },
+    {
+      "name": "filtering",
+      "type": {
+        "type": "record",
+        "name": "WebhookFiltering",
+        "fields": [
+          {
+            "name": "applied_filters",
+            "type": {
+              "type": "array",
+              "items": "string"
+            },
+            "default": [],
+            "doc": "List of filter IDs that were applied"
+          },
+          {
+            "name": "filter_matches",
+            "type": {
+              "type": "map",
+              "values": "boolean"
+            },
+            "default": {},
+            "doc": "Filter ID to match result mapping"
+          },
+          {
+            "name": "delivery_condition",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Logical condition that triggered delivery"
+          }
+        ]
+      },
+      "default": {"applied_filters": [], "filter_matches": {}, "delivery_condition": null},
+      "doc": "Webhook filtering information"
+    },
+    {
+      "name": "delivery_info",
+      "type": {
+        "type": "record",
+        "name": "DeliveryInfo",
+        "fields": [
+          {
+            "name": "url",
+            "type": "string",
+            "doc": "Webhook delivery URL"
+          },
+          {
+            "name": "method",
+            "type": {
+              "type": "enum",
+              "name": "HttpMethod",
+              "symbols": ["POST", "PUT", "PATCH"]
+            },
+            "default": "POST",
+            "doc": "HTTP method used for delivery"
+          },
+          {
+            "name": "headers",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "default": {},
+            "doc": "HTTP headers to include"
+          },
+          {
+            "name": "timeout_seconds",
+            "type": "int",
+            "default": 30,
+            "doc": "Request timeout in seconds"
+          },
+          {
+            "name": "content_type",
+            "type": {
+              "type": "enum",
+              "name": "ContentType",
+              "symbols": ["APPLICATION_JSON", "APPLICATION_XML", "APPLICATION_FORM_URLENCODED"]
+            },
+            "default": "APPLICATION_JSON",
+            "doc": "Content type for payload"
+          }
+        ]
+      },
+      "doc": "Webhook delivery configuration"
+    },
+    {
+      "name": "security",
+      "type": {
+        "type": "record",
+        "name": "WebhookSecurity",
+        "fields": [
+          {
+            "name": "signature_method",
+            "type": {
+              "type": "enum",
+              "name": "SignatureMethod",
+              "symbols": ["HMAC_SHA256", "HMAC_SHA512", "JWT", "NONE"]
+            },
+            "default": "HMAC_SHA256",
+            "doc": "Signature method used"
+          },
+          {
+            "name": "signature",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Webhook signature for verification"
+          },
+          {
+            "name": "timestamp",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "Signature timestamp"
+          },
+          {
+            "name": "nonce",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Unique nonce for replay protection"
+          }
+        ]
+      },
+      "doc": "Security and verification data"
+    },
+    {
+      "name": "retry_info",
+      "type": {
+        "type": "record",
+        "name": "RetryInfo",
+        "fields": [
+          {
+            "name": "attempt",
+            "type": "int",
+            "default": 1,
+            "doc": "Current delivery attempt number"
+          },
+          {
+            "name": "max_attempts",
+            "type": "int",
+            "default": 3,
+            "doc": "Maximum number of delivery attempts"
+          },
+          {
+            "name": "next_retry_at",
+            "type": ["null", {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }],
+            "default": null,
+            "doc": "Timestamp of next retry attempt"
+          },
+          {
+            "name": "retry_strategy",
+            "type": {
+              "type": "enum",
+              "name": "RetryStrategy",
+              "symbols": ["LINEAR", "EXPONENTIAL", "FIXED", "CUSTOM"]
+            },
+            "default": "EXPONENTIAL",
+            "doc": "Retry backoff strategy"
+          },
+          {
+            "name": "backoff_multiplier",
+            "type": "float",
+            "default": 2.0,
+            "doc": "Backoff multiplier for exponential strategy"
+          },
+          {
+            "name": "jitter_enabled",
+            "type": "boolean",
+            "default": true,
+            "doc": "Whether to add jitter to retry delays"
+          }
+        ]
+      },
+      "doc": "Retry configuration and status"
+    },
+    {
+      "name": "delivery_tracking",
+      "type": {
+        "type": "record",
+        "name": "DeliveryTracking",
+        "fields": [
+          {
+            "name": "status",
+            "type": {
+              "type": "enum",
+              "name": "DeliveryStatus",
+              "symbols": ["PENDING", "SENDING", "SUCCESS", "FAILED", "RETRYING", "ABANDONED"]
+            },
+            "default": "PENDING",
+            "doc": "Current delivery status"
+          },
+          {
+            "name": "response_code",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "HTTP response code from last attempt"
+          },
+          {
+            "name": "response_body",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Response body from last attempt (truncated)"
+          },
+          {
+            "name": "delivery_duration_ms",
+            "type": ["null", "long"],
+            "default": null,
+            "doc": "Time taken for last delivery attempt"
+          },
+          {
+            "name": "error_message",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Error message from failed attempts"
+          },
+          {
+            "name": "last_attempt_at",
+            "type": ["null", {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }],
+            "default": null,
+            "doc": "Timestamp of last delivery attempt"
+          }
+        ]
+      },
+      "default": {"status": "PENDING", "response_code": null, "response_body": null, "delivery_duration_ms": null, "error_message": null, "last_attempt_at": null},
+      "doc": "Delivery tracking and status information"
+    },
+    {
+      "name": "rate_limiting",
+      "type": {
+        "type": "record",
+        "name": "RateLimiting",
+        "fields": [
+          {
+            "name": "rate_limit_applied",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether rate limiting was applied"
+          },
+          {
+            "name": "delay_seconds",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Delay imposed by rate limiting"
+          },
+          {
+            "name": "bucket_key",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Rate limiting bucket identifier"
+          }
+        ]
+      },
+      "default": {"rate_limit_applied": false, "delay_seconds": null, "bucket_key": null},
+      "doc": "Rate limiting information"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional metadata"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Webhook creation timestamp"
+    },
+    {
+      "name": "scheduled_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Scheduled delivery timestamp"
+    }
+  ]
+}

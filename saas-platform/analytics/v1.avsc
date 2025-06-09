@@ -1,0 +1,164 @@
+{
+  "type": "record",
+  "name": "AnalyticsEvent",
+  "namespace": "com.demo.saas.analytics",
+  "doc": "Business intelligence and analytics data for multi-tenant SaaS - Initial version",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique event identifier"
+    },
+    {
+      "name": "tenant_id",
+      "type": "string",
+      "doc": "Tenant/customer identifier"
+    },
+    {
+      "name": "user_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "User identifier (null for system events)"
+    },
+    {
+      "name": "session_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "User session identifier"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "AnalyticsEventType",
+        "symbols": ["PAGE_VIEW", "FEATURE_USAGE", "API_CALL", "CONVERSION", "ENGAGEMENT", "PERFORMANCE", "ERROR"]
+      },
+      "doc": "Type of analytics event"
+    },
+    {
+      "name": "category",
+      "type": "string",
+      "doc": "Event category (e.g., 'user_interaction', 'system_performance')"
+    },
+    {
+      "name": "action",
+      "type": "string",
+      "doc": "Specific action taken (e.g., 'button_click', 'file_upload')"
+    },
+    {
+      "name": "properties",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Event properties as key-value pairs"
+    },
+    {
+      "name": "metrics",
+      "type": {
+        "type": "record",
+        "name": "EventMetrics",
+        "fields": [
+          {
+            "name": "duration_ms",
+            "type": ["null", "long"],
+            "default": null,
+            "doc": "Event duration in milliseconds"
+          },
+          {
+            "name": "value",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Numeric value associated with event"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "default": 1,
+            "doc": "Event count (for aggregated events)"
+          }
+        ]
+      },
+      "doc": "Event metrics and measurements"
+    },
+    {
+      "name": "context",
+      "type": {
+        "type": "record",
+        "name": "EventContext",
+        "fields": [
+          {
+            "name": "page_url",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Page URL where event occurred"
+          },
+          {
+            "name": "referrer",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Referrer URL"
+          },
+          {
+            "name": "user_agent",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User agent string"
+          },
+          {
+            "name": "ip_address",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Client IP address (masked for privacy)"
+          },
+          {
+            "name": "device_type",
+            "type": ["null", {
+              "type": "enum",
+              "name": "DeviceType",
+              "symbols": ["DESKTOP", "MOBILE", "TABLET", "API", "UNKNOWN"]
+            }],
+            "default": null,
+            "doc": "Device type"
+          }
+        ]
+      },
+      "doc": "Event context information"
+    },
+    {
+      "name": "feature_flags",
+      "type": {
+        "type": "map",
+        "values": "boolean"
+      },
+      "default": {},
+      "doc": "Active feature flags at time of event"
+    },
+    {
+      "name": "experiment_variants",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "A/B test variants active for user"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Event timestamp"
+    },
+    {
+      "name": "server_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Server-side timestamp when event was received"
+    }
+  ]
+}
