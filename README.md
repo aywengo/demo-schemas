@@ -1,0 +1,1 @@
+# Demo Schemas - Coming Soon!\n\nThis repository will contain realistic business schemas for the Kafka Schema Registry MCP Demo.\n\n⚠️ **Under Development** - Schemas are being created.\n\nStay tuned for:\n- E-commerce platform schemas\n- IoT sensor data schemas  \n- Financial services schemas\n- Multi-tenant SaaS schemas\n- Schema evolution examples\n- Compatibility test cases
