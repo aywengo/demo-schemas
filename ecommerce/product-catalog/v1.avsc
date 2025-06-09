@@ -1,0 +1,164 @@
+{
+  "type": "record",
+  "name": "Product",
+  "namespace": "com.demo.ecommerce.catalog",
+  "doc": "Product catalog information for e-commerce platform - Initial version",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Unique product identifier (SKU)"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Product display name"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "doc": "Product description"
+    },
+    {
+      "name": "category",
+      "type": {
+        "type": "record",
+        "name": "Category",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "doc": "Category identifier"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "doc": "Category display name"
+          },
+          {
+            "name": "parent_id",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Parent category ID for hierarchical categories"
+          }
+        ]
+      },
+      "doc": "Product category information"
+    },
+    {
+      "name": "price",
+      "type": {
+        "type": "record",
+        "name": "Price",
+        "fields": [
+          {
+            "name": "amount",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 10,
+              "scale": 2
+            },
+            "doc": "Price amount"
+          },
+          {
+            "name": "currency",
+            "type": {
+              "type": "enum",
+              "name": "Currency",
+              "symbols": ["USD", "EUR", "GBP", "CAD", "JPY", "AUD"]
+            },
+            "doc": "Currency code"
+          }
+        ]
+      },
+      "doc": "Product pricing information"
+    },
+    {
+      "name": "inventory",
+      "type": {
+        "type": "record",
+        "name": "Inventory",
+        "fields": [
+          {
+            "name": "available",
+            "type": "int",
+            "doc": "Available quantity"
+          },
+          {
+            "name": "reserved",
+            "type": "int",
+            "default": 0,
+            "doc": "Reserved quantity (in carts, pending orders)"
+          },
+          {
+            "name": "warehouse_location",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Primary warehouse location"
+          }
+        ]
+      },
+      "doc": "Inventory information"
+    },
+    {
+      "name": "attributes",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ProductAttribute",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string",
+              "doc": "Attribute name (e.g., 'color', 'size', 'material')"
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "doc": "Attribute value"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Product attributes (color, size, material, etc.)"
+    },
+    {
+      "name": "images",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Product image URLs"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "ProductStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "DISCONTINUED", "DRAFT"]
+      },
+      "default": "ACTIVE",
+      "doc": "Product status"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Product creation timestamp"
+    },
+    {
+      "name": "updated_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last update timestamp"
+    }
+  ]
+}

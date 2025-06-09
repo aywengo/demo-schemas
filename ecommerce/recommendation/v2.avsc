@@ -1,0 +1,251 @@
+{
+  "type": "record",
+  "name": "ProductRecommendation",
+  "namespace": "com.demo.ecommerce.recommendation",
+  "doc": "ML-driven product recommendation data - v2 with A/B testing and personalization",
+  "fields": [
+    {
+      "name": "recommendation_id",
+      "type": "string",
+      "doc": "Unique recommendation identifier"
+    },
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "Target user identifier"
+    },
+    {
+      "name": "session_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Browser session identifier for anonymous users"
+    },
+    {
+      "name": "algorithm",
+      "type": {
+        "type": "enum",
+        "name": "RecommendationAlgorithm",
+        "symbols": ["COLLABORATIVE_FILTERING", "CONTENT_BASED", "HYBRID", "TRENDING", "POPULAR", "DEEP_LEARNING", "REINFORCEMENT_LEARNING"]
+      },
+      "doc": "Algorithm used for generating recommendations"
+    },
+    {
+      "name": "context",
+      "type": {
+        "type": "enum",
+        "name": "RecommendationContext",
+        "symbols": ["HOMEPAGE", "PRODUCT_PAGE", "CART", "CHECKOUT", "EMAIL", "SEARCH_RESULTS", "MOBILE_APP", "PUSH_NOTIFICATION"]
+      },
+      "doc": "Context where recommendation is displayed"
+    },
+    {
+      "name": "experiment_config",
+      "type": {
+        "type": "record",
+        "name": "ExperimentConfig",
+        "fields": [
+          {
+            "name": "experiment_id",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "A/B test experiment identifier"
+          },
+          {
+            "name": "variant",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Experiment variant (control, treatment_a, treatment_b, etc.)"
+          },
+          {
+            "name": "treatment_group",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Treatment group assignment"
+          }
+        ]
+      },
+      "default": {"experiment_id": null, "variant": null, "treatment_group": null},
+      "doc": "A/B testing configuration"
+    },
+    {
+      "name": "personalization_factors",
+      "type": {
+        "type": "record",
+        "name": "PersonalizationFactors",
+        "fields": [
+          {
+            "name": "user_segment",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "User behavioral segment"
+          },
+          {
+            "name": "geographic_region",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Geographic region code"
+          },
+          {
+            "name": "time_of_day",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Time of day category (morning, afternoon, evening, night)"
+          },
+          {
+            "name": "device_type",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Device type (mobile, tablet, desktop)"
+          }
+        ]
+      },
+      "default": {"user_segment": null, "geographic_region": null, "time_of_day": null, "device_type": null},
+      "doc": "Personalization factors used in recommendation"
+    },
+    {
+      "name": "recommended_products",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "RecommendedProduct",
+          "fields": [
+            {
+              "name": "product_id",
+              "type": "string",
+              "doc": "Product identifier"
+            },
+            {
+              "name": "score",
+              "type": "float",
+              "doc": "Recommendation confidence score (0.0-1.0)"
+            },
+            {
+              "name": "rank",
+              "type": "int",
+              "doc": "Position in recommendation list (1-based)"
+            },
+            {
+              "name": "reason",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Human-readable explanation for recommendation"
+            },
+            {
+              "name": "predicted_ctr",
+              "type": ["null", "float"],
+              "default": null,
+              "doc": "Predicted click-through rate"
+            },
+            {
+              "name": "predicted_conversion",
+              "type": ["null", "float"],
+              "default": null,
+              "doc": "Predicted conversion probability"
+            }
+          ]
+        }
+      },
+      "doc": "List of recommended products with scores and predictions"
+    },
+    {
+      "name": "model_version",
+      "type": "string",
+      "doc": "ML model version used for recommendations"
+    },
+    {
+      "name": "features_used",
+      "type": {
+        "type": "record",
+        "name": "RecommendationFeatures",
+        "fields": [
+          {
+            "name": "user_behavior",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether user behavior data was used"
+          },
+          {
+            "name": "product_attributes",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether product attributes were used"
+          },
+          {
+            "name": "purchase_history",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether purchase history was used"
+          },
+          {
+            "name": "seasonal_trends",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether seasonal trends were considered"
+          },
+          {
+            "name": "real_time_signals",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether real-time behavioral signals were used"
+          }
+        ]
+      },
+      "doc": "Features used in recommendation generation"
+    },
+    {
+      "name": "quality_metrics",
+      "type": {
+        "type": "record",
+        "name": "QualityMetrics",
+        "fields": [
+          {
+            "name": "diversity_score",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Diversity score of recommended products"
+          },
+          {
+            "name": "novelty_score",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Novelty score (how unexpected the recommendations are)"
+          },
+          {
+            "name": "coverage_score",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Catalog coverage score"
+          }
+        ]
+      },
+      "default": {"diversity_score": null, "novelty_score": null, "coverage_score": null},
+      "doc": "Recommendation quality metrics"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional metadata for analytics and debugging"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Recommendation generation timestamp"
+    },
+    {
+      "name": "expires_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Recommendation expiration timestamp"
+    }
+  ]
+}

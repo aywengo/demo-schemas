@@ -1,0 +1,243 @@
+{
+  "type": "record",
+  "name": "Product",
+  "namespace": "com.demo.ecommerce.catalog",
+  "doc": "Product catalog information for e-commerce platform - v2 with internationalization support",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Unique product identifier (SKU)"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Product display name (default language)"
+    },
+    {
+      "name": "localized_names",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Localized product names by language code"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "doc": "Product description (default language)"
+    },
+    {
+      "name": "localized_descriptions",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Localized product descriptions by language code"
+    },
+    {
+      "name": "category",
+      "type": {
+        "type": "record",
+        "name": "Category",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "doc": "Category identifier"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "doc": "Category display name"
+          },
+          {
+            "name": "parent_id",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Parent category ID for hierarchical categories"
+          }
+        ]
+      },
+      "doc": "Product category information"
+    },
+    {
+      "name": "price",
+      "type": {
+        "type": "record",
+        "name": "Price",
+        "fields": [
+          {
+            "name": "amount",
+            "type": {
+              "type": "bytes",
+              "logicalType": "decimal",
+              "precision": 10,
+              "scale": 2
+            },
+            "doc": "Price amount"
+          },
+          {
+            "name": "currency",
+            "type": {
+              "type": "enum",
+              "name": "Currency",
+              "symbols": ["USD", "EUR", "GBP", "CAD", "JPY", "AUD", "CHF", "SEK", "NOK"]
+            },
+            "doc": "Currency code"
+          }
+        ]
+      },
+      "doc": "Product pricing information"
+    },
+    {
+      "name": "regional_prices",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "record",
+          "name": "RegionalPrice",
+          "fields": [
+            {
+              "name": "amount",
+              "type": {
+                "type": "bytes",
+                "logicalType": "decimal",
+                "precision": 10,
+                "scale": 2
+              }
+            },
+            {
+              "name": "currency",
+              "type": "Currency"
+            },
+            {
+              "name": "tax_inclusive",
+              "type": "boolean",
+              "default": false
+            }
+          ]
+        }
+      },
+      "default": {},
+      "doc": "Regional pricing by country/region code"
+    },
+    {
+      "name": "inventory",
+      "type": {
+        "type": "record",
+        "name": "Inventory",
+        "fields": [
+          {
+            "name": "available",
+            "type": "int",
+            "doc": "Available quantity"
+          },
+          {
+            "name": "reserved",
+            "type": "int",
+            "default": 0,
+            "doc": "Reserved quantity (in carts, pending orders)"
+          },
+          {
+            "name": "warehouse_location",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Primary warehouse location"
+          }
+        ]
+      },
+      "doc": "Inventory information"
+    },
+    {
+      "name": "attributes",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ProductAttribute",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string",
+              "doc": "Attribute name (e.g., 'color', 'size', 'material')"
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "doc": "Attribute value"
+            }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "Product attributes (color, size, material, etc.)"
+    },
+    {
+      "name": "images",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Product image URLs"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "ProductStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "DISCONTINUED", "DRAFT"]
+      },
+      "default": "ACTIVE",
+      "doc": "Product status"
+    },
+    {
+      "name": "seo",
+      "type": {
+        "type": "record",
+        "name": "SEOData",
+        "fields": [
+          {
+            "name": "meta_title",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "SEO meta title"
+          },
+          {
+            "name": "meta_description",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "SEO meta description"
+          },
+          {
+            "name": "slug",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "URL-friendly product slug"
+          }
+        ]
+      },
+      "default": {"meta_title": null, "meta_description": null, "slug": null},
+      "doc": "SEO optimization data"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Product creation timestamp"
+    },
+    {
+      "name": "updated_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last update timestamp"
+    }
+  ]
+}

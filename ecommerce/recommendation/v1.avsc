@@ -1,0 +1,140 @@
+{
+  "type": "record",
+  "name": "ProductRecommendation",
+  "namespace": "com.demo.ecommerce.recommendation",
+  "doc": "ML-driven product recommendation data - Initial version",
+  "fields": [
+    {
+      "name": "recommendation_id",
+      "type": "string",
+      "doc": "Unique recommendation identifier"
+    },
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "Target user identifier"
+    },
+    {
+      "name": "session_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Browser session identifier for anonymous users"
+    },
+    {
+      "name": "algorithm",
+      "type": {
+        "type": "enum",
+        "name": "RecommendationAlgorithm",
+        "symbols": ["COLLABORATIVE_FILTERING", "CONTENT_BASED", "HYBRID", "TRENDING", "POPULAR"]
+      },
+      "doc": "Algorithm used for generating recommendations"
+    },
+    {
+      "name": "context",
+      "type": {
+        "type": "enum",
+        "name": "RecommendationContext",
+        "symbols": ["HOMEPAGE", "PRODUCT_PAGE", "CART", "CHECKOUT", "EMAIL", "SEARCH_RESULTS"]
+      },
+      "doc": "Context where recommendation is displayed"
+    },
+    {
+      "name": "recommended_products",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "RecommendedProduct",
+          "fields": [
+            {
+              "name": "product_id",
+              "type": "string",
+              "doc": "Product identifier"
+            },
+            {
+              "name": "score",
+              "type": "float",
+              "doc": "Recommendation confidence score (0.0-1.0)"
+            },
+            {
+              "name": "rank",
+              "type": "int",
+              "doc": "Position in recommendation list (1-based)"
+            },
+            {
+              "name": "reason",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Human-readable explanation for recommendation"
+            }
+          ]
+        }
+      },
+      "doc": "List of recommended products with scores"
+    },
+    {
+      "name": "model_version",
+      "type": "string",
+      "doc": "ML model version used for recommendations"
+    },
+    {
+      "name": "features_used",
+      "type": {
+        "type": "record",
+        "name": "RecommendationFeatures",
+        "fields": [
+          {
+            "name": "user_behavior",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether user behavior data was used"
+          },
+          {
+            "name": "product_attributes",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether product attributes were used"
+          },
+          {
+            "name": "purchase_history",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether purchase history was used"
+          },
+          {
+            "name": "seasonal_trends",
+            "type": "boolean",
+            "default": false,
+            "doc": "Whether seasonal trends were considered"
+          }
+        ]
+      },
+      "doc": "Features used in recommendation generation"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional metadata for analytics and debugging"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Recommendation generation timestamp"
+    },
+    {
+      "name": "expires_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Recommendation expiration timestamp"
+    }
+  ]
+}
