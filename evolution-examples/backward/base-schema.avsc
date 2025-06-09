@@ -1,0 +1,31 @@
+{
+  "type": "record",
+  "name": "CustomerProfile",
+  "namespace": "com.demo.evolution.backward",
+  "doc": "Base customer profile schema for backward compatibility examples",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Unique customer identifier"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "doc": "Customer email address"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Customer full name"
+    },
+    {
+      "name": "created_at",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Account creation timestamp"
+    }
+  ]
+}

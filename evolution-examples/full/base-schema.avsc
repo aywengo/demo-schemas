@@ -1,0 +1,47 @@
+{
+  "type": "record",
+  "name": "UserActivity",
+  "namespace": "com.demo.evolution.full",
+  "doc": "Base user activity schema for full compatibility examples",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "Unique user identifier"
+    },
+    {
+      "name": "session_id",
+      "type": "string",
+      "doc": "User session identifier"
+    },
+    {
+      "name": "activity_type",
+      "type": {
+        "type": "enum",
+        "name": "ActivityType",
+        "symbols": ["LOGIN", "LOGOUT", "PAGE_VIEW", "CLICK"]
+      },
+      "doc": "Type of user activity"
+    },
+    {
+      "name": "page_url",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Page URL (optional)"
+    },
+    {
+      "name": "duration_ms",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Activity duration in milliseconds (optional)"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Activity timestamp"
+    }
+  ]
+}

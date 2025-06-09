@@ -1,0 +1,74 @@
+{
+  "type": "record",
+  "name": "UserActivity",
+  "namespace": "com.demo.evolution.full",
+  "doc": "Evolved user activity schema - fully compatible changes",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "Unique user identifier"
+    },
+    {
+      "name": "session_id",
+      "type": "string",
+      "doc": "User session identifier"
+    },
+    {
+      "name": "activity_type",
+      "type": {
+        "type": "enum",
+        "name": "ActivityType",
+        "symbols": ["LOGIN", "LOGOUT", "PAGE_VIEW", "CLICK", "DOWNLOAD", "UPLOAD"]
+      },
+      "doc": "Type of user activity (added new symbols at end)"
+    },
+    {
+      "name": "duration_ms",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Activity duration in milliseconds (optional)"
+    },
+    {
+      "name": "device_info",
+      "type": {
+        "type": "record",
+        "name": "DeviceInfo",
+        "fields": [
+          {
+            "name": "device_type",
+            "type": {
+              "type": "enum",
+              "name": "DeviceType",
+              "symbols": ["DESKTOP", "MOBILE", "TABLET"]
+            },
+            "default": "DESKTOP",
+            "doc": "Type of device"
+          },
+          {
+            "name": "user_agent",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Browser user agent string"
+          }
+        ]
+      },
+      "default": {"device_type": "DESKTOP", "user_agent": null},
+      "doc": "Device information (new field with complete default)"
+    },
+    {
+      "name": "referrer",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Referrer URL (new optional field)"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Activity timestamp"
+    }
+  ]
+}
