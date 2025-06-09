@@ -1,0 +1,46 @@
+{
+  "type": "record",
+  "name": "ProductInventory",
+  "namespace": "com.demo.evolution.breaking",
+  "doc": "BREAKING: Renamed fields without aliases",
+  "fields": [
+    {
+      "name": "sku",
+      "type": "string",
+      "doc": "Unique product identifier - BREAKING: Renamed from 'product_id'"
+    },
+    {
+      "name": "location_id",
+      "type": "string",
+      "doc": "Warehouse identifier - BREAKING: Renamed from 'warehouse_id'"
+    },
+    {
+      "name": "available_quantity",
+      "type": "int",
+      "doc": "Available quantity - BREAKING: Renamed from 'quantity'"
+    },
+    {
+      "name": "inventory_status",
+      "type": {
+        "type": "enum",
+        "name": "InventoryStatus",
+        "symbols": ["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK", "DISCONTINUED"]
+      },
+      "doc": "Inventory status - BREAKING: Renamed from 'status'"
+    },
+    {
+      "name": "updated_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last inventory update timestamp - BREAKING: Renamed from 'last_updated'"
+    },
+    {
+      "name": "notes",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Additional notes about inventory status"
+    }
+  ]
+}

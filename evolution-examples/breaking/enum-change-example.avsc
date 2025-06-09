@@ -1,0 +1,46 @@
+{
+  "type": "record",
+  "name": "ProductInventory",
+  "namespace": "com.demo.evolution.breaking",
+  "doc": "BREAKING: Changed enum symbols",
+  "fields": [
+    {
+      "name": "product_id",
+      "type": "string",
+      "doc": "Unique product identifier"
+    },
+    {
+      "name": "warehouse_id",
+      "type": "string",
+      "doc": "Warehouse identifier"
+    },
+    {
+      "name": "quantity",
+      "type": "int",
+      "doc": "Available quantity"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "InventoryStatus",
+        "symbols": ["AVAILABLE", "LIMITED", "UNAVAILABLE", "RETIRED"]
+      },
+      "doc": "Inventory status - BREAKING: Changed all enum symbols"
+    },
+    {
+      "name": "last_updated",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Last inventory update timestamp"
+    },
+    {
+      "name": "notes",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Additional notes about inventory status"
+    }
+  ]
+}

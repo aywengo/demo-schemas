@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "name": "ProductInventory",
+  "namespace": "com.demo.evolution.breaking",
+  "doc": "BREAKING: Changed field types",
+  "fields": [
+    {
+      "name": "product_id",
+      "type": "string",
+      "doc": "Unique product identifier"
+    },
+    {
+      "name": "warehouse_id",
+      "type": "string",
+      "doc": "Warehouse identifier"
+    },
+    {
+      "name": "quantity",
+      "type": "long",
+      "doc": "Available quantity - BREAKING: Changed from int to long"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "InventoryStatus",
+        "symbols": ["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK", "DISCONTINUED"]
+      },
+      "doc": "Inventory status"
+    },
+    {
+      "name": "last_updated",
+      "type": "string",
+      "doc": "Last inventory update timestamp - BREAKING: Changed from timestamp-millis to string"
+    },
+    {
+      "name": "notes",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Additional notes about inventory status"
+    }
+  ]
+}
