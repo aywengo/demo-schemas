@@ -2,7 +2,7 @@
 
 🎨 **Realistic business schemas for comprehensive demo scenarios**
 
-This repository contains carefully crafted Avro schemas that demonstrate real-world use cases for the [Kafka Schema Registry MCP Server](https://github.com/aywengo/kafka-schema-reg-mcp). Each schema showcases different aspects of schema design, evolution, and compatibility.
+This repository contains carefully crafted Avro schemas that demonstrate real-world use cases for the [Kafka Schema Registry MCP Server](https://github.com/kafka-schema-reg-mcp-demos/kafka-schema-reg-mcp). Each schema showcases different aspects of schema design, evolution, and compatibility.
 
 ## 📁 Repository Structure
 
@@ -87,7 +87,7 @@ demo-schemas/
 ### Browse Schemas
 ```bash
 # Clone the schemas repository
-git clone https://github.com/aywengo/demo-schemas.git
+git clone https://github.com/kafka-schema-reg-mcp-demos/demo-schemas.git
 cd demo-schemas
 
 # Explore schema categories
@@ -99,27 +99,58 @@ cat ecommerce/user-profile/v1.avsc
 
 ### Load into Demo Environment
 ```bash
-# Start the demo environment
-cd ../demo-deployment
+# Clone the demo deployment repository
+git clone https://github.com/kafka-schema-reg-mcp-demos/demo-deployment.git
+cd demo-deployment
+
+# Set up the complete demo environment with GitHub OAuth
+./scripts/setup-github-oauth.sh
+
+# The setup script automatically:
+# 1. Starts all Schema Registry instances
+# 2. Configures GitHub OAuth
+# 3. Loads all demo schemas via setup-demo-data.sh
+# 4. Sets up monitoring and UI
+```
+
+### Manual Schema Loading (Alternative)
+```bash
+# If you want to load schemas manually after environment is running
+cd demo-deployment
+
+# Ensure registries are running
 docker-compose -f docker-compose.github-oauth.yml up -d
 
-# Load schemas into registries
-./scripts/load-demo-schemas.sh
+# Load schemas into all registries
+./scripts/setup-demo-data.sh
 ```
 
 ### Test Schema Evolution
 ```bash
+# Get a GitHub token first (for authentication)
+export GITHUB_TOKEN="your_github_token_here"
+
 # Register initial schema
 curl -X POST http://localhost:38000/schemas \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
   -H "Content-Type: application/json" \
-  -d @ecommerce/user-profile/v1.json
+  -d '{
+    "registry": "development",
+    "context": "ecommerce", 
+    "subject": "user-profile",
+    "schema_definition": '$(cat ecommerce/user-profile/v1.avsc)'
+  }'
 
 # Test compatibility with evolution
 curl -X POST http://localhost:38000/compatibility \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
   -H "Content-Type: application/json" \
-  -d @ecommerce/user-profile/v2.json
+  -d '{
+    "registry": "development",
+    "context": "ecommerce",
+    "subject": "user-profile", 
+    "schema_definition": '$(cat ecommerce/user-profile/v2.avsc)'
+  }'
 ```
 
 ## 📊 Schema Metrics
@@ -161,11 +192,12 @@ curl -X POST http://localhost:38000/compatibility \
 # Register with context organization
 curl -X POST http://localhost:38000/schemas \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Content-Type: application/json" \
   -d '{
     "registry": "development",
     "context": "ecommerce",
     "subject": "user-profile",
-    "schema": {...}
+    "schema_definition": {...}
   }'
 ```
 
@@ -174,11 +206,12 @@ curl -X POST http://localhost:38000/schemas \
 # Test backward compatibility
 curl -X POST http://localhost:38000/compatibility \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Content-Type: application/json" \
   -d '{
     "registry": "development",
     "context": "ecommerce",
     "subject": "user-profile",
-    "schema": {...}
+    "schema_definition": {...}
   }'
 ```
 
@@ -187,6 +220,7 @@ curl -X POST http://localhost:38000/compatibility \
 # Promote from dev to staging
 curl -X POST http://localhost:38000/migrate \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Content-Type: application/json" \
   -d '{
     "source_registry": "development",
     "target_registry": "staging",
@@ -195,6 +229,30 @@ curl -X POST http://localhost:38000/migrate \
     "target_context": "ecommerce"
   }'
 ```
+
+## 🎯 Demo Environment Features
+
+After running the setup, you'll have:
+
+### 🏗️ **Multi-Registry Architecture**
+- **Development**: Full read/write access, latest schema versions
+- **Staging**: Limited write access, promoted schemas for testing  
+- **Production**: Read-only access, stable production schemas
+
+### 📊 **Schema Distribution**
+- **Progressive deployment**: Schemas flow from dev → staging → production
+- **Version management**: Different versions in each environment
+- **Context organization**: Domain-based schema grouping
+
+### 🔐 **GitHub OAuth Integration**
+- **Organization-based access**: Authenticate via GitHub organization
+- **Team-based permissions**: Different access levels per team
+- **Real OAuth flows**: Production-ready authentication
+
+### 📱 **Web Interface**
+- **Schema browser**: Explore schemas via web UI at http://localhost:3000
+- **Registry comparison**: View differences between environments
+- **Interactive testing**: Test compatibility directly in the browser
 
 ## 📚 Learning Resources
 
@@ -230,9 +288,9 @@ We welcome contributions of new schemas and evolution examples!
 
 ## 🔗 Related Projects
 
-- **[Main MCP Server](https://github.com/aywengo/kafka-schema-reg-mcp)** - Core MCP implementation
-- **[Demo Deployment](https://github.com/aywengo/demo-deployment)** - Infrastructure and setup
-- **[Demo Documentation](https://github.com/aywengo/demo-docs)** - Guides and tutorials
+- **[Main MCP Server](https://github.com/kafka-schema-reg-mcp-demos/kafka-schema-reg-mcp)** - Core MCP implementation
+- **[Demo Deployment](https://github.com/kafka-schema-reg-mcp-demos/demo-deployment)** - Infrastructure and setup
+- **[Demo Documentation](https://github.com/kafka-schema-reg-mcp-demos/demo-docs)** - Guides and tutorials
 
 ## 📄 License
 
@@ -240,4 +298,4 @@ These demo schemas are provided under the [MIT License](LICENSE) for educational
 
 ---
 
-🎯 **Ready to explore real-world schema management?** Start with the [demo deployment](https://github.com/aywengo/demo-deployment) and load these schemas!
+🎯 **Ready to explore real-world schema management?** Start with the [demo deployment](https://github.com/kafka-schema-reg-mcp-demos/demo-deployment) and load these schemas!
